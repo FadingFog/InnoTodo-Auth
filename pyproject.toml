@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "inno-todo-auth"
+version = "0.1.0"
+description = ""
+authors = ["FadingFog <fadingfog@github.com>"]
+readme = "README.md"
+packages = [{include = "inno_todo_auth"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.0"
+uvicorn = "^0.21.1"
+asyncpg = "^0.27.0"
+aiosqlite = "^0.18.0"
+email-validator = "^1.3.1"
+bcrypt = "^4.0.1"
+passlib = "^1.7.4"
+sqlalchemy = {extras = ["asyncpg"], version = "^2.0.6"}
+python-dotenv = "^1.0.0"
+python-jose = "^3.3.0"
+loguru = "^0.6.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

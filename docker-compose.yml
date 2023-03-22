@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    expose:
+      - "${POSTGRES_PORT:-5432}"
+
+  auth:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    env_file:
+      - ./.env
+    ports:
+      - "8010:8010"
+    depends_on:
+      - db
+
+networks:
+  default:
+    name: messaging-net
+    external: true
+
+volumes:
+  postgres_data:
