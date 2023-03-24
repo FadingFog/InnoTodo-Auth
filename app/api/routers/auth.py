@@ -20,7 +20,7 @@ async def authorize_user(user: User = Depends(get_current_user), service: AuthSe
     return JSONResponse({'status': 'success'}, headers={'Authorization': private_token})
 
 
-@router.post("/auth", status_code=200)
+@router.post("/auth/token", status_code=200)
 async def obtain_token(input_schema: TokenObtain, service: AuthServices = Depends(AuthServices)):
     user, access_token = await service.authenticate(input_schema)
 

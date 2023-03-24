@@ -1,5 +1,5 @@
 services:
-  db:
+  db_auth:
     image: postgres:alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -16,10 +16,10 @@ services:
       - ./:/app
     env_file:
       - ./.env
-    ports:
-      - "8010:8010"
+    expose:
+      - "8010"
     depends_on:
-      - db
+      - db_auth
 
 networks:
   default:
