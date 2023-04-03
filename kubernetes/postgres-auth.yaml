@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-auth-depl
+  labels:
+    app: postgres-auth
+spec:
+  serviceName: postgres-auth-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-auth
+  template:
+    metadata:
+      labels:
+        app: postgres-auth
+    spec:
+      containers:
+        - name: postgres-auth
+          image: postgres:alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: auth-config
+          volumeMounts:
+            - name: postgres-auth-pv
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-auth-pv
+          persistentVolumeClaim:
+            claimName: postgres-auth-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-auth-svc
+spec:
+  selector:
+    app: postgres-auth
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

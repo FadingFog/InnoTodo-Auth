@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-app-depl
+  labels:
+    app: auth-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-app
+  template:
+    metadata:
+      labels:
+        app: auth-app
+    spec:
+      containers:
+        - name: auth-app
+          image: fadingfog/innotodo:auth
+          ports:
+            - containerPort: 8010
+          envFrom:
+            - configMapRef:
+                name: auth-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-app-svc
+spec:
+  selector:
+    app: auth-app
+  ports:
+    - protocol: TCP
+      port: 8010
+      targetPort: 8010
