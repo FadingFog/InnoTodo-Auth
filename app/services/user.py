@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,6 +24,10 @@ class UserServices(BaseServices):
     async def create(self, input_schema: UserCreate) -> User:
         hashed_password = password_helper.get_hash_password(input_schema.password)
         user = User(email=input_schema.email, hashed_password=hashed_password)
+        exists = await self._repository.get_one_by_field('email', user.email)
+
+        if exists:
+            raise HTTPException(status_code=400, detail="User with this email already exists")
 
         user = await self._repository.create(user)
         return user

@@ -17,6 +17,10 @@ class AuthServices(BaseServices):
     def __init__(self, session: AsyncSession = Depends(get_session)):
         super().__init__(session)
 
+    async def _check_obj_404(self, user: User):
+        if user is None:
+            raise HTTPException(status_code=401, detail="Username or password is invalid")
+
     async def authenticate(self, input_schema: TokenObtain) -> tuple[User, str]:
         user = await self._repository.get_one_by_field("email", input_schema.email)
         await self._check_obj_404(user)
@@ -24,7 +28,7 @@ class AuthServices(BaseServices):
         verified = password_helper.verify_password(input_schema.password, user.hashed_password)
 
         if not verified:
-            raise HTTPException(status_code=400)
+            raise HTTPException(status_code=401, detail="Username or password is invalid")
 
         token_data = {'user_id': user.id}
         access_token = token_helper.create_access_token(token_data)
